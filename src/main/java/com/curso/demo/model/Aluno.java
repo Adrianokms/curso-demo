@@ -1,17 +1,18 @@
 package com.curso.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,14 +25,16 @@ public class Aluno {
     private String cpf;
 
     private String nome;
-
     private String telefone;
     private String email;
 
-    @ManyToMany
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "aluno_curso",
             joinColumns = @JoinColumn(name = "aluno_id"),
-            inverseJoinColumns = @JoinColumn(name = "curso_id"))
+            inverseJoinColumns = @JoinColumn(name = "curso_id")
+    )
     private Set<Curso> cursos = new HashSet<>();
 }

@@ -1,4 +1,4 @@
-CREATE TABLE aluno_curso (
+CREATE TABLE IF NOT EXISTS aluno_curso (
     aluno_id BIGINT,
     curso_id BIGINT,
     PRIMARY KEY (aluno_id, curso_id),

@@ -1,7 +1,7 @@
-CREATE TABLE curso (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS curso (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
-    duracaoEmMeeses INT,
+    duracaoMeses INT,
     gradeCurricular TEXT
 );

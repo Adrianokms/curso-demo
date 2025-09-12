@@ -1,10 +1,14 @@
 package com.curso.demo.service;
 
 import com.curso.demo.dto.AlunoDTO;
+import com.curso.demo.dto.AlunoResponseDTO;
 import com.curso.demo.exception.ResourceNotFoundException;
 import com.curso.demo.model.Aluno;
+import com.curso.demo.model.Curso;
 import com.curso.demo.repository.AlunoRepository;
+import com.curso.demo.repository.CursoRepository;
 import com.fasterxml.jackson.databind.util.BeanUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
@@ -17,9 +21,12 @@ public class AlunoService {
 
 
     private final AlunoRepository alunoRepository;
+    private final CursoService cursoService;
 
-    public AlunoService (AlunoRepository alunoRepository) {
+    // O construtor é o ponto de injeção de dependência
+    public AlunoService(AlunoRepository alunoRepository, CursoService cursoService) {
         this.alunoRepository = alunoRepository;
+        this.cursoService = cursoService;
     }
 
     // Metodo pra criar um novo aluno  CREATE
@@ -61,6 +68,36 @@ public class AlunoService {
         }
 
         alunoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public AlunoResponseDTO matricularAluno(Long alunoId, Long cursoId) {
+        Aluno aluno = findById(alunoId);
+        Curso curso = cursoService.findById(cursoId);
+
+        aluno.getCursos().add(curso);
+        curso.getAlunos().add(aluno);
+
+        Aluno alunoAtualizado = alunoRepository.save(aluno);
+
+        return new AlunoResponseDTO(alunoAtualizado);
+    }
+
+    @Transactional
+    public AlunoResponseDTO desmatricularAluno(Long alunoId, Long cursoId) {
+        Aluno aluno = findById(alunoId);
+        Curso curso = cursoService.findById(cursoId);
+
+        if (!aluno.getCursos().contains(curso)) {
+            throw new IllegalArgumentException("Aluno não está matriculado neste curso.");
+        }
+
+        aluno.getCursos().remove(curso);
+        curso.getAlunos().remove(aluno);
+
+        Aluno alunoAtualizado = alunoRepository.save(aluno);
+
+        return new AlunoResponseDTO(alunoAtualizado);
     }
     
 }
