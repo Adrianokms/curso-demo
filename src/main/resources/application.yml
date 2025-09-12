@@ -11,3 +11,19 @@ spring:
     console:
       enabled: true
       patch: /h2-console
+
+
+springdoc:
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+  info:
+    title: Instituição de Cursos API
+    description: Documentação da API de Alunos e Cursos de uma instituição de ensino técnico.
+    version: 1.0.0
+    contact:
+      name: Seu Nome
+      email: seu.email@example.com
